@@ -1,4 +1,4 @@
-          use crate::{accounts::Accounts, block::Block, storage};
+use crate::{accounts::Accounts, block::Block, storage};
 use chrono::Utc;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
@@ -30,11 +30,11 @@ pub struct Chain {
 
 impl Chain {
     pub fn new() -> Self {
-        if let Some((blocks, accounts)) = storage::load_chain() {
+        if let Some(chain_file) = storage::load_chain() {
             println!("💾 Loaded existing state from chain_state.json");
             Self {
-                blocks,
-                accounts,
+                blocks: chain_file.blocks,
+                accounts: chain_file.accounts,
                 job_queue: VecDeque::new(),
             }
         } else {
@@ -105,12 +105,11 @@ impl Chain {
         output: String,
         cost: u64,
     ) -> Block {
-        // --- NEW PROTOCOL ECONOMICS ---
+        // Protocol Economics: Compute cost + fixed 1,000 unit data bounty
         let bounty: u64 = 1000; 
         let total_reward = cost + bounty;
         
         self.accounts.credit(&miner_address, total_reward);
-        // ------------------------------
 
         // Retrieve the original prompt (input) from the job queue
         let mut input = String::from("unknown prompt");
@@ -156,4 +155,3 @@ impl Chain {
         }
     }
 }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   }
