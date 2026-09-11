@@ -1,44 +1,51 @@
-mod api;
-mod block;
-mod chain;
-mod storage;
-mod accounts;
+mod config;
+mod lb_studio;
+mod crypto;
+mod chain_client;
 
-use api::{router, SharedChain};
-use chain::Chain;
-use std::sync::{Arc, Mutex};
-use tokio::signal;
-use axum::serve;
-use tokio::net::TcpListener;
-use std::net::SocketAddr;
+use std::io::{self, Write};
 
 #[tokio::main]
 async fn main() {
-    // Load chain from disk or create new
-        let chain = if let Some(file) = storage::load_chain() {
-                let mut c = Chain::new();
-                        c.blocks = file.blocks;
-                                c.accounts = file.accounts;
-                                        c
-                                            } else {
-                                                    Chain::new()
-                                                        };
+    let cfg = config::load();
 
-                                                            let shared: SharedChain = Arc::new(Mutex::new(chain));
+        loop {
+                print!("Enter a prompt (or 'exit'): ");
+                        io::stdout().flush().unwrap();
 
-                                                                let app = router(shared);
+                                let mut prompt = String::new();
+                                        io::stdin().read_line(&mut prompt).unwrap();
+                                                let prompt = prompt.trim().to_string();
 
-                                                                    let addr = SocketAddr::from(([127, 0, 0, 1], 7000));
-                                                                        println!("Chain node listening on http://{}", addr);
+                                                        if prompt == "exit" {
+                                                                    println!("Miner stopped.");
+                                                                                break;
+                                                                                        }
 
-                                                                            let listener = TcpListener::bind(addr).await.unwrap();
+                                                                                                if prompt.is_empty() {
+                                                                                                            println!("Please enter something.");
+                                                                                                                        continue;
+                                                                                                                                }
 
-                                                                                serve(listener, app)
-                                                                                        .with_graceful_shutdown(shutdown_signal())
-                                                                                                .await
-                                                                                                        .unwrap();
-                                                                                                        }
+                                                                                                                                        // Run model
+                                                                                                                                                let (output, tokens_used) = lb_studio::run(&cfg.lb_url, &prompt).await;
 
-                                                                                                        async fn shutdown_signal() {
-                                                                                                            let _ = signal::ctrl_c().await;
-                                                                                                            }
+                                                                                                                                                        // Hash + sign
+                                                                                                                                                                let hash = crypto::hash(&output);
+                                                                                                                                                                        let _sig = crypto::sign(&hash, &cfg.keypair);
+
+                                                                                                                                                                                // Submit receipt
+                                                                                                                                                                                        chain_client::submit_receipt(
+                                                                                                                                                                                                    &cfg.chain_url,
+                                                                                                                                                                                                                "manual-job",
+                                                                                                                                                                                                                            &cfg.miner_address,
+                                                                                                                                                                                                                                        tokens_used,
+                                                                                                                                                                                                                                                )
+                                                                                                                                                                                                                                                        .await;
+
+                                                                                                                                                                                                                                                                println!(
+                                                                                                                                                                                                                                                                            "Manual job complete → {} tokens → receipt sent",
+                                                                                                                                                                                                                                                                                        tokens_used
+                                                                                                                                                                                                                                                                                                );
+                                                                                                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                                                                                                    }
