@@ -9,41 +9,49 @@ use std::io::{self, Write};
 async fn main() {
     let cfg = config::load();
 
-        println!("===============================================");
-            println!("⛏️  AI Miner Active");
-                println!("📍 Chain Node:  {}", cfg.chain_url);
-                    println!("📍 LM Studio:   {}", cfg.lb_url);
-                        println!("👤 Miner Addr:  {}", cfg.miner_address);
-                            println!("===============================================");
-                                println!("⏳ Polling queue for work...");
+    println!("===============================================");
+    println!("⛏️  AI Miner Active");
+    println!("📍 Chain Node:  {}", cfg.chain_url);
+    println!("📍 LM Studio:   {}", cfg.lb_url);
+    println!("👤 Miner Addr:  {}", cfg.miner_address);
+    println!("===============================================");
+    println!("⏳ Polling queue for work...");
 
-                                    loop {
-                                            if let Some(job) = chain_client::poll_job(&cfg.chain_url).await {
-                                                        println!("\n📥 [JOB FOUND] ID: {} | Prompt: \"{}\"", job.id, job.prompt);
-                                                                    println!("⚙️  Running local AI inference...");
+    loop {
+        if let Some(job) = chain_client::poll_job(&cfg.chain_url).await {
+            println!("\n📥 [JOB FOUND] ID: {} | Prompt: \"{}\"", job.id, job.prompt);
+            println!("⚙️  Running local AI inference...");
 
-                                                                                let (output, tokens_used) = lb_studio::run(&cfg.lb_url, &job.prompt).await;
-                                                                                            println!("🧠 [INFERENCE READY] Compute cost: {} tokens", tokens_used);
+            // NEW: full inference output
+            let (thinking, output, cost, model) =
+                lb_studio::run(&cfg.lb_url, &job.prompt).await;
 
-                                                                                                        let hash = crypto::hash(&output);
-                                                                                                                    let _sig = crypto::sign(&hash, &cfg.keypair);
+            println!("🧠 [INFERENCE READY] Compute cost: {} tokens", cost);
 
-                                                                                                                                chain_client::submit_receipt(
-                                                                                                                                                &cfg.chain_url,
-                                                                                                                                                                &job.id,
-                                                                                                                                                                                &cfg.miner_address,
-                                                                                                                                                                                                tokens_used,
-                                                                                                                                                                                                            )
-                                                                                                                                                                                                                        .await;
+            // Hash + sign output (unchanged)
+            let hash = crypto::hash(&output);
+            let _sig = crypto::sign(&hash, &cfg.keypair);
 
-                                                                                                                                                                                                                                    println!("✅ [RECEIPT ACCEPTED] Earned reward for {} tokens!", tokens_used);
-                                                                                                                                                                                                                                                print!("⏳ Waiting for new jobs...");
-                                                                                                                                                                                                                                                            io::stdout().flush().unwrap();
-                                                                                                                                                                                                                                                                    } else {
-                                                                                                                                                                                                                                                                                // Print a dot heartbeat to indicate active listening
-                                                                                                                                                                                                                                                                                            print!(".");
-                                                                                                                                                                                                                                                                                                        io::stdout().flush().unwrap();
-                                                                                                                                                                                                                                                                                                                    tokio::time::sleep(tokio::time::Duration::from_secs(2)).await;
-                                                                                                                                                                                                                                                                                                                            }
-                                                                                                                                                                                                                                                                                                                                }
-                                                                                                                                                                                                                                                                                                                                }
+            // NEW: full receipt submission
+            chain_client::submit_receipt(
+                &cfg.chain_url,
+                &job.id,
+                &cfg.miner_address,
+                &model,
+                &thinking,
+                &output,
+                cost,
+            )
+            .await;
+
+            println!("✅ [RECEIPT ACCEPTED] Earned reward for {} tokens!", cost);
+            print!("⏳ Waiting for new jobs...");
+            io::stdout().flush().unwrap();
+        } else {
+            // Heartbeat
+            print!(".");
+            io::stdout().flush().unwrap();
+            tokio::time::sleep(tokio::time::Duration::from_secs(2)).await;
+        }
+    }
+}
