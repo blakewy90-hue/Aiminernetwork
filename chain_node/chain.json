@@ -1,0 +1,49 @@
+{
+  "blocks": [
+    {
+      "index": 0,
+      "timestamp": 1789133800,
+      "job_id": "genesis",
+      "miner_address": "system",
+      "tokens_used": 0,
+      "reward_units": 0,
+      "previous_hash": "",
+      "block_hash": "aeebad4a796fcc2e15dc4c6061b45ed9b373f26adfc798ca7d2d8cc58182718e"
+    },
+    {
+      "index": 1,
+      "timestamp": 1789134554,
+      "job_id": "manual-test",
+      "miner_address": "blake-miner-01",
+      "tokens_used": 271,
+      "reward_units": 271,
+      "previous_hash": "aeebad4a796fcc2e15dc4c6061b45ed9b373f26adfc798ca7d2d8cc58182718e",
+      "block_hash": "79f0eb94cba6d69b9601a8ed82df41d4c259ce17729d01a9f363232cf61808ab"
+    },
+    {
+      "index": 2,
+      "timestamp": 1789134568,
+      "job_id": "manual-test",
+      "miner_address": "blake-miner-01",
+      "tokens_used": 224,
+      "reward_units": 224,
+      "previous_hash": "79f0eb94cba6d69b9601a8ed82df41d4c259ce17729d01a9f363232cf61808ab",
+      "block_hash": "45f1a5173e85ff2e3d29c65ec76453560f7bf86d8beb62a5cac46f9adcc520f0"
+    },
+    {
+      "index": 3,
+      "timestamp": 1789134600,
+      "job_id": "manual-test",
+      "miner_address": "blake-miner-01",
+      "tokens_used": 538,
+      "reward_units": 538,
+      "previous_hash": "45f1a5173e85ff2e3d29c65ec76453560f7bf86d8beb62a5cac46f9adcc520f0",
+      "block_hash": "a6c522c95072a8b644ca701e26964fe29e74212640545f2b65a2106ed9739baa"
+    }
+  ],
+  "accounts": {
+    "balances": {
+      "blake-miner-01": 1033
+    }
+  }
+}

@@ -1,0 +1,9 @@
+C:\Users\danie\Desktop\New folder (7)\miner\target\debug\deps\rand_chacha-27cb7d3c72ab4c41.d: C:\Users\danie\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\rand_chacha-0.3.1\src\lib.rs C:\Users\danie\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\rand_chacha-0.3.1\src\chacha.rs C:\Users\danie\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\rand_chacha-0.3.1\src\guts.rs
+
+C:\Users\danie\Desktop\New folder (7)\miner\target\debug\deps\librand_chacha-27cb7d3c72ab4c41.rlib: C:\Users\danie\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\rand_chacha-0.3.1\src\lib.rs C:\Users\danie\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\rand_chacha-0.3.1\src\chacha.rs C:\Users\danie\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\rand_chacha-0.3.1\src\guts.rs
+
+C:\Users\danie\Desktop\New folder (7)\miner\target\debug\deps\librand_chacha-27cb7d3c72ab4c41.rmeta: C:\Users\danie\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\rand_chacha-0.3.1\src\lib.rs C:\Users\danie\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\rand_chacha-0.3.1\src\chacha.rs C:\Users\danie\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\rand_chacha-0.3.1\src\guts.rs
+
+C:\Users\danie\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\rand_chacha-0.3.1\src\lib.rs:
+C:\Users\danie\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\rand_chacha-0.3.1\src\chacha.rs:
+C:\Users\danie\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\rand_chacha-0.3.1\src\guts.rs:
