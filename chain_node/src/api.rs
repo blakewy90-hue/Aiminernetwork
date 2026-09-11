@@ -22,40 +22,48 @@ use axum::{
                                         .route("/submit_receipt", post(submit_receipt))
                                                 .route("/blocks", get(get_blocks))
                                                         .route("/balance/:address", get(get_balance))
-                                                                .with_state(chain)
-                                                                }
+                                                                .route("/job_count", get(get_job_count))
+                                                                        .with_state(chain)
+                                                                        }
 
-                                                                async fn submit_receipt(
-                                                                    State(chain): State<SharedChain>,
-                                                                        Json(receipt): Json<Receipt>,
-                                                                        ) -> &'static str {
-                                                                            let mut chain = chain.lock().unwrap();
+                                                                        async fn submit_receipt(
+                                                                            State(chain): State<SharedChain>,
+                                                                                Json(receipt): Json<Receipt>,
+                                                                                ) -> &'static str {
+                                                                                    let mut chain = chain.lock().unwrap();
 
-                                                                                let block = chain.create_block(
-                                                                                        receipt.job_id,
-                                                                                                receipt.miner_address,
-                                                                                                        receipt.tokens_used,
-                                                                                                            );
+                                                                                        let block = chain.create_block(
+                                                                                                receipt.job_id,
+                                                                                                        receipt.miner_address,
+                                                                                                                receipt.tokens_used,
+                                                                                                                    );
 
-                                                                                                                chain.blocks.push(block);
-                                                                                                                    storage::save_chain(&chain.blocks, &chain.accounts);
+                                                                                                                        chain.blocks.push(block);
+                                                                                                                            storage::save_chain(&chain.blocks, &chain.accounts);
 
-                                                                                                                        "ok"
-                                                                                                                        }
+                                                                                                                                "ok"
+                                                                                                                                }
 
-                                                                                                                        async fn get_blocks(
-                                                                                                                            State(chain): State<SharedChain>,
-                                                                                                                            ) -> Json<Vec<crate::block::Block>> {
-                                                                                                                                let chain = chain.lock().unwrap();
-                                                                                                                                    Json(chain.blocks.clone())
-                                                                                                                                    }
+                                                                                                                                async fn get_blocks(
+                                                                                                                                    State(chain): State<SharedChain>,
+                                                                                                                                    ) -> Json<Vec<crate::block::Block>> {
+                                                                                                                                        let chain = chain.lock().unwrap();
+                                                                                                                                            Json(chain.blocks.clone())
+                                                                                                                                            }
 
-                                                                                                                                    async fn get_balance(
-                                                                                                                                        Path(address): Path<String>,
-                                                                                                                                            State(chain): State<SharedChain>,
-                                                                                                                                            ) -> Json<u128> {
-                                                                                                                                                let chain = chain.lock().unwrap();
-                                                                                                                                                    let bal = chain.accounts.get_balance(&address);
-                                                                                                                                                        Json(bal)
-                                                                                                                                                        }
+                                                                                                                                            async fn get_balance(
+                                                                                                                                                Path(address): Path<String>,
+                                                                                                                                                    State(chain): State<SharedChain>,
+                                                                                                                                                    ) -> Json<u128> {
+                                                                                                                                                        let chain = chain.lock().unwrap();
+                                                                                                                                                            let bal = chain.accounts.get_balance(&address);
+                                                                                                                                                                Json(bal)
+                                                                                                                                                                }
+
+                                                                                                                                                                async fn get_job_count(
+                                                                                                                                                                    State(chain): State<SharedChain>,
+                                                                                                                                                                    ) -> Json<u64> {
+                                                                                                                                                                        let chain = chain.lock().unwrap();
+                                                                                                                                                                            Json(chain.blocks.len() as u64)
+                                                                                                                                                                            }
 }
