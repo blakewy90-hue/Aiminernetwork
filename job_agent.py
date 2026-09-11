@@ -1,57 +1,106 @@
+                                                                                                                                                                                                                              print(f"💎 Reward:   {block.get('reward_units')} base units")
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                return block.get("output", "")
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            except Exception as e:
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            print(f"\n⚠️ Connection issue during polling: {e}")
 import requests
 import time
 import sys
 
 class ChainAgent:
     def __init__(self, node_url: str = "http://127.0.0.1:3000", agent_id: str = "agent-01"):
-            self.node_url = node_url.rstrip("/")
-                    self.agent_id = agent_id
+        self.node_url = node_url.rstrip("/")
+        self.agent_id = agent_id
 
-                        def check_node_health(self) -> bool:
-                                """Checks if the Axum blockchain node is online and reachable."""
-                                        try:
-                                                    res = requests.get(f"{self.node_url}/job_count", timeout=3)
-                                                                return res.status_code == 200
-                                                                        except requests.RequestException:
-                                                                                    return False
+    def check_node_health(self) -> bool:
+        try:
+            res = requests.get(f"{self.node_url}/job_count", timeout=3)
+            return res.status_code == 200
+        except requests.RequestException:
+            return False
 
-                                                                                        def submit_job(self, prompt: str) -> str:
-                                                                                                """Submits a job prompt to the blockchain queue and returns the job ID."""
-                                                                                                        payload = {"prompt": prompt}
-                                                                                                                try:
-                                                                                                                            res = requests.post(
-                                                                                                                                            f"{self.node_url}/jobs", 
-                                                                                                                                                            json=payload, 
-                                                                                                                                                                            headers={"Content-Type": "application/json"},
-                                                                                                                                                                                            timeout=5
-                                                                                                                                                                                                        )
-                                                                                                                                                                                                                    res.raise_for_status()
-                                                                                                                                                                                                                                data = res.json()
-                                                                                                                                                                                                                                            return data.get("id")
-                                                                                                                                                                                                                                                    except Exception as e:
-                                                                                                                                                                                                                                                                print(f"❌ Failed to submit job to chain node: {e}")
-                                                                                                                                                                                                                                                                            return None
+    def submit_job(self, prompt: str) -> str:
+        payload = {"prompt": prompt}
+        try:
+            res = requests.post(
+                f"{self.node_url}/jobs", 
+                json=payload, 
+                headers={"Content-Type": "application/json"},
+                timeout=5
+            )
+            res.raise_for_status()
+            data = res.json()
+            return data.get("id")
+        except Exception as e:
+            print(f"❌ Failed to submit job to chain node: {e}")
+            return None
 
-                                                                                                                                                                                                                                                                                def await_result(self, job_id: str, timeout_seconds: int = 120, poll_interval: float = 2.0) -> str:
-                                                                                                                                                                                                                                                                                        """Polls the block ledger until a block containing job_id is mined."""
-                                                                                                                                                                                                                                                                                                start_time = time.time()
-                                                                                                                                                                                                                                                                                                        print(f"⏳ Waiting for miner to process job [{job_id}]...")
+    def await_result(self, job_id: str, timeout_seconds: int = 120, poll_interval: float = 2.0) -> str:
+        start_time = time.time()
+        print(f"⏳ Waiting for miner to process job [{job_id}]...")
 
-                                                                                                                                                                                                                                                                                                                while time.time() - start_time < timeout_seconds:
-                                                                                                                                                                                                                                                                                                                            try:
-                                                                                                                                                                                                                                                                                                                                            res = requests.get(f"{self.node_url}/blocks", timeout=5)
-                                                                                                                                                                                                                                                                                                                                                            if res.status_code == 200:
-                                                                                                                                                                                                                                                                                                                                                                                blocks = res.json()
-                                                                                                                                                                                                                                                                                                                                                                                                    # Check newest blocks first
-                                                                                                                                                                                                                                                                                                                                                                                                                        for block in reversed(blocks):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                if block.get("job_id") == job_id:
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                            print(f"\n✅ [BLOCK MINED] Block Height #{block.get('index')}")
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        print(f"⛏️  Mined By: {block.get('miner_address')}")
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    print(f"💎 Reward:   {block.get('reward_units')} base units")
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                return block.get("output", "")
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            except Exception as e:
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            print(f"\n⚠️ Connection issue during polling: {e}")
+        while time.time() - start_time < timeout_seconds:
+            try:
+                res = requests.get(f"{self.node_url}/blocks", timeout=5)
+                if res.status_code == 200:
+                    blocks = res.json()
+                    for block in reversed(blocks):
+                        if block.get("job_id") == job_id:
+                            print(f"\n✅ [BLOCK MINED] Block Height #{block.get('index')}")
+                            print(f"⛏️  Mined By: {block.get('miner_address')}")
+                            print(f"💎 Reward:   {block.get('reward_units')} base units")
+                            return block.get("output", "")
+            except Exception as e:
+                print(f"\n⚠️ Connection issue during polling: {e}")
 
+            time.sleep(poll_interval)
+            print(".", end="", flush=True)
+
+        print("\n❌ Timeout reached! No miner picked up the job within the allocated time.")
+        return None
+
+def main():
+    print("==========================================")
+    print("🤖 Autonomous AI Chain Agent Starting")
+    print("==========================================")
+
+    agent = ChainAgent(node_url="http://127.0.0.1:3000", agent_id="agent-01")
+
+    if not agent.check_node_health():
+        print("❌ ERROR: Cannot connect to chain node at http://127.0.0.1:3000.")
+        print("👉 Ensure 'chain_node' is running via 'cargo run' in Terminal 1.")
+        sys.exit(1)
+
+    print("✅ Chain node connection established.")
+
+    prompt = (
+        "Tailor a professional resume summary for a Rust Systems Engineer applying for an AI-infrastructure role. "
+        "Highlight experience with Axum, Tokio, and local LLM orchestration."
+    )
+
+    print(f"\n📤 Submitting prompt to chain queue...")
+    job_id = agent.submit_job(prompt)
+
+    if not job_id:
+        print("❌ Job submission aborted.")
+        sys.exit(1)
+
+    print(f"🔒 Job registered! ID: {job_id}")
+
+    output = agent.await_result(job_id, timeout_seconds=90)
+
+    if output:
+        print("\n================ AI OUTPUT ================")
+        print(output)
+        print("===========================================")
+
+        filename = "tailored_resume.txt"
+        with open(filename, "w", encoding="utf-8") as f:
+            f.write(output)
+        print(f"\n💾 Saved output to '{filename}' successfully!")
+
+if __name__ == "__main__":
+    main()
+                   
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         time.sleep(poll_interval)
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     print(".", end="", flush=True)
 
