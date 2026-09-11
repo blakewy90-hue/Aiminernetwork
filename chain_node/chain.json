@@ -2,7 +2,7 @@
   "blocks": [
     {
       "index": 0,
-      "timestamp": 1789133800,
+      "timestamp": 1789144470,
       "job_id": "genesis",
       "miner_address": "system",
       "tokens_used": 0,
@@ -12,38 +12,38 @@
     },
     {
       "index": 1,
-      "timestamp": 1789134554,
-      "job_id": "manual-test",
+      "timestamp": 1789145149,
+      "job_id": "job-1789144705457934400",
       "miner_address": "blake-miner-01",
-      "tokens_used": 271,
-      "reward_units": 271,
+      "tokens_used": 471,
+      "reward_units": 471,
       "previous_hash": "aeebad4a796fcc2e15dc4c6061b45ed9b373f26adfc798ca7d2d8cc58182718e",
-      "block_hash": "79f0eb94cba6d69b9601a8ed82df41d4c259ce17729d01a9f363232cf61808ab"
+      "block_hash": "68a0c47c8b5f55d91a1df4af7b824735a1c146f2380902befd6241400b022c64"
     },
     {
       "index": 2,
-      "timestamp": 1789134568,
-      "job_id": "manual-test",
+      "timestamp": 1789145408,
+      "job_id": "job-1789145386988634500",
       "miner_address": "blake-miner-01",
-      "tokens_used": 224,
-      "reward_units": 224,
-      "previous_hash": "79f0eb94cba6d69b9601a8ed82df41d4c259ce17729d01a9f363232cf61808ab",
-      "block_hash": "45f1a5173e85ff2e3d29c65ec76453560f7bf86d8beb62a5cac46f9adcc520f0"
+      "tokens_used": 393,
+      "reward_units": 393,
+      "previous_hash": "68a0c47c8b5f55d91a1df4af7b824735a1c146f2380902befd6241400b022c64",
+      "block_hash": "e719e348a0ff25f144e0f1844edf5efcfa675bdd423ea2080114da19fcef3732"
     },
     {
       "index": 3,
-      "timestamp": 1789134600,
-      "job_id": "manual-test",
+      "timestamp": 1789145507,
+      "job_id": "job-1789145478024560500",
       "miner_address": "blake-miner-01",
-      "tokens_used": 538,
-      "reward_units": 538,
-      "previous_hash": "45f1a5173e85ff2e3d29c65ec76453560f7bf86d8beb62a5cac46f9adcc520f0",
-      "block_hash": "a6c522c95072a8b644ca701e26964fe29e74212640545f2b65a2106ed9739baa"
+      "tokens_used": 436,
+      "reward_units": 436,
+      "previous_hash": "e719e348a0ff25f144e0f1844edf5efcfa675bdd423ea2080114da19fcef3732",
+      "block_hash": "a9f21329432722134d736f23aad2247999bdf5580401a57fd0ff5a470063a2c4"
     }
   ],
   "accounts": {
     "balances": {
-      "blake-miner-01": 1033
+      "blake-miner-01": 1300
     }
   }
 }

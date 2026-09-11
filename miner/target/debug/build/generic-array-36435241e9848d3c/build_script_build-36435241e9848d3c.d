@@ -1,5 +1,5 @@
-C:\Users\danie\Desktop\New folder (7)\miner\target\debug\build\generic-array-36435241e9848d3c\build_script_build-36435241e9848d3c.d: C:\Users\danie\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\generic-array-0.14.7\build.rs
+C:\Users\danie\Desktop\Aiminernetwork\miner\target\debug\build\generic-array-36435241e9848d3c\build_script_build-36435241e9848d3c.d: C:\Users\danie\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\generic-array-0.14.7\build.rs
 
-C:\Users\danie\Desktop\New folder (7)\miner\target\debug\build\generic-array-36435241e9848d3c\build_script_build-36435241e9848d3c.exe: C:\Users\danie\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\generic-array-0.14.7\build.rs
+C:\Users\danie\Desktop\Aiminernetwork\miner\target\debug\build\generic-array-36435241e9848d3c\build_script_build-36435241e9848d3c.exe: C:\Users\danie\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\generic-array-0.14.7\build.rs
 
 C:\Users\danie\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\generic-array-0.14.7\build.rs:

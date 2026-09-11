@@ -1,51 +1,35 @@
-mod config;
-mod lb_studio;
-mod crypto;
-mod chain_client;
+mod accounts;
+mod api;
+mod block;
+mod chain;
+mod storage;
 
-use std::io::{self, Write};
+use chain::Chain;
+use std::sync::{Arc, Mutex};
 
 #[tokio::main]
 async fn main() {
-    let cfg = config::load();
+    println!("-----------------------------------------------");
+        println!("🚀 Starting Chain Node Server...");
 
-        loop {
-                print!("Enter a prompt (or 'exit'): ");
-                        io::stdout().flush().unwrap();
+            let chain = Arc::new(Mutex::new(Chain::new()));
+                let app = api::router(chain);
 
-                                let mut prompt = String::new();
-                                        io::stdin().read_line(&mut prompt).unwrap();
-                                                let prompt = prompt.trim().to_string();
+                    let addr = "127.0.0.1:3000";
+                        let listener = tokio::net::TcpListener::bind(addr)
+                                .await
+                                        .expect("Failed to bind TCP listener");
 
-                                                        if prompt == "exit" {
-                                                                    println!("Miner stopped.");
-                                                                                break;
+                                            println!("📍 Server listening on: http://{}", addr);
+                                                println!("⚙️  Active Routes:");
+                                                    println!("   • POST /jobs            -> Enqueue AI tasks");
+                                                        println!("   • GET  /jobs/poll       -> Miners fetch tasks");
+                                                            println!("   • POST /submit_receipt  -> Submit proof of work");
+                                                                println!("   • GET  /blocks          -> Query blockchain state");
+                                                                    println!("   • GET  /balance/:addr   -> Query miner balance");
+                                                                        println!("-----------------------------------------------");
+
+                                                                            if let Err(e) = axum::serve(listener, app).await {
+                                                                                    eprintln!("❌ Server execution error: {}", e);
                                                                                         }
-
-                                                                                                if prompt.is_empty() {
-                                                                                                            println!("Please enter something.");
-                                                                                                                        continue;
-                                                                                                                                }
-
-                                                                                                                                        // Run model
-                                                                                                                                                let (output, tokens_used) = lb_studio::run(&cfg.lb_url, &prompt).await;
-
-                                                                                                                                                        // Hash + sign
-                                                                                                                                                                let hash = crypto::hash(&output);
-                                                                                                                                                                        let _sig = crypto::sign(&hash, &cfg.keypair);
-
-                                                                                                                                                                                // Submit receipt
-                                                                                                                                                                                        chain_client::submit_receipt(
-                                                                                                                                                                                                    &cfg.chain_url,
-                                                                                                                                                                                                                "manual-job",
-                                                                                                                                                                                                                            &cfg.miner_address,
-                                                                                                                                                                                                                                        tokens_used,
-                                                                                                                                                                                                                                                )
-                                                                                                                                                                                                                                                        .await;
-
-                                                                                                                                                                                                                                                                println!(
-                                                                                                                                                                                                                                                                            "Manual job complete → {} tokens → receipt sent",
-                                                                                                                                                                                                                                                                                        tokens_used
-                                                                                                                                                                                                                                                                                                );
-                                                                                                                                                                                                                                                                                                    }
-                                                                                                                                                                                                                                                                                                    }
+                                                                                        }
