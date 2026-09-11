@@ -1,13 +1,24 @@
-use serde::{Deserialize, Serialize};
+use serde::{Serialize, Deserialize};
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Block {
     pub index: u64,
-        pub timestamp: i64,
-            pub job_id: String,
-                pub miner_address: String,
-                    pub tokens_used: u64,
-                        pub reward_units: u64,
-                            pub previous_hash: String,
-                                pub block_hash: String,
-                                }
+    pub timestamp: i64,
+    pub job_id: String,
+    pub miner_address: String,
+
+    // AI model metadata
+    pub model: String,
+    pub input: String,
+    pub thinking: String,
+    pub output: String,
+
+    // Economics
+    pub cost: u64,
+    pub bounty: u64,
+    pub total_reward: u64,
+
+    // Chain linkage
+    pub previous_hash: String,
+    pub block_hash: String,
+}
